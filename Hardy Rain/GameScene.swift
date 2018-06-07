@@ -13,8 +13,12 @@ class GameScene: SKScene {
     
     private var label : SKLabelNode?
     private var spinnyNode : SKShapeNode?
+    private var path : [SKNode]?
     
     override func didMove(to view: SKView) {
+        
+        self.camera = self.childNode(withName: "main_camera") as? SKCameraNode
+        self.path = self.childNode(withName: "path")?.children
         
         // Get label node from scene and store it for use later
         self.label = self.childNode(withName: "//helloLabel") as? SKLabelNode
@@ -55,6 +59,12 @@ class GameScene: SKScene {
     }
     
     func touchUp(atPoint pos : CGPoint) {
+        if let pathOptions = self.path {
+            self.camera?.position = pathOptions.first(where: { (SKNode) -> Bool in
+                return self.camera?.position != SKNode.position
+            })!.position
+        }
+        
         if let n = self.spinnyNode?.copy() as! SKShapeNode? {
             n.position = pos
             n.strokeColor = SKColor.red
